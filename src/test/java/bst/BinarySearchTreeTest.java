@@ -2,6 +2,7 @@ package bst;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -42,8 +43,12 @@ public class BinarySearchTreeTest {
 
     @Test
     public void testDelete() {
-        tree.delete(1);
-        assertNull(tree.get(1));
+        tree.delete(1000); // non existing
+        assertEquals(100, tree.size());
+        for (int i = 0; i < 100; i++) {
+            tree.delete(i);
+        }
+        assertEquals(0, tree.size());
     }
 
     @Test
@@ -51,10 +56,32 @@ public class BinarySearchTreeTest {
         for (int i = 0; i < 100; i++) {
             tree.deleteMin();
         }
-        tree.deleteMin();
-        assertNull(tree.get(0));
-        tree.deleteMin();
-        assertNull(tree.get(1));
+        assertTrue(tree.isEmpty());
+    }
+
+    @Test
+    public void deleteMax() {
+        for (int i = 0; i < 100; i++) {
+            tree.deleteMax();
+        }
+        assertTrue(tree.isEmpty());
+    }
+
+    @Test
+    public void testSize() {
+        assertEquals(100, tree.size());
+        for (int i = 0; i < 100; i++) {
+            tree.deleteMax();
+        }
+        assertEquals(0, tree.size());
+        tree.add(1, 2);
+        assertEquals(1, tree.size());
+    }
+
+    @Test
+    public void testMinMax() {
+        assertEquals(Integer.valueOf(39), tree.min());
+        assertEquals(Integer.valueOf(79), tree.max());
     }
 
 }

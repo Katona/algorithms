@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-import tree.Node;
-
 public class BinarySearchTree<K, V> implements Iterable<V> {
 
     private static class Node<K, V> {
@@ -16,12 +14,14 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         public final V value;
         public final Node<K, V> left;
         public final Node<K, V> right;
+        public final int size;
 
-        public Node(K key, V value, Node<K, V> left, Node<K, V> right) {
+        public Node(K key, V value, Node<K, V> left, Node<K, V> right, int size) {
             this.key = key;
             this.value = value;
             this.left = left;
             this.right = right;
+            this.size = size;
         }
     }
 
@@ -39,17 +39,23 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
     public Node<K, V> add(Node<K, V> node, K key, V value) {
         Node<K, V> result;
         if (node == null) {
-            result = new Node<>(key, value, null, null);
+            result = new Node<>(key, value, null, null, 1);
         } else {
             if (comparator.compare(key, node.key) < 0) {
-                result = new Node<>(node.key, node.value, add(node.left, key, value), node.right);
+                Node<K, V> newLeft = add(node.left, key, value);
+                result = new Node<>(node.key, node.value, newLeft, node.right, size(newLeft) + 1 + size(node.right));
             } else {
-                result = new Node<>(node.key, node.value, node.left, add(node.right, key, value));
+                Node<K, V> newRight = add(node.right, key, value);
+                result = new Node<>(node.key, node.value, node.left, newRight, size(node.left) + 1 + size(newRight));
             }
         }
         return result;
     }
 
+    private int size(Node<K, V> node) {
+        return node != null ? node.size : 0;
+    }
+    
     public int depth() {
         return depth(root);
     }
@@ -99,54 +105,95 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
     }
 
 	public void delete(K key) {
-
+        checkNotEmpty();
+        root = delete(root, key);
     }
     
-    // public Node<K, V> delete(Node<K, V> node, K key) {
-    //     if (comparator.compare(node.left.key, key) == 0) {
-
-    //     }
-    // }
+    private Node<K, V> delete(Node<K, V> node, K key) {
+        if (node == null) {
+            return null;
+        }
+        if (comparator.compare(node.key, key) == 0) {
+            Node<K, V> successor;
+            if (node.right != null) {
+                successor = minNode(node.right);
+                Node<K, V> newRight = deleteMin(node.right);
+                return new Node<K, V>(successor.key, successor.value, node.left, newRight, size(node.left) + 1 + size(newRight));
+            } else if (node.left != null) {
+                successor = maxNode(node.left);
+                Node<K, V> newLeft = deleteMax(node.left);
+                return new Node<K, V>(successor.key, successor.value, newLeft, node.right, size(newLeft) + 1 + size(node.right));
+            } else {
+                return null;
+            }
+ 
+        } else if (comparator.compare(key, node.key) < 0) {
+            Node<K, V> newLeft = delete(node.left, key);
+            return new Node<K,V>(node.key, node.value, newLeft, node.right, size(newLeft) + 1 + size(node.right));
+        } else {
+            Node<K, V> newRight = delete(node.right, key);
+            return new Node<K,V>(node.key, node.value, node.left, newRight, size(node.left) + 1 + size(newRight));
+        }
+    }
 
     public void deleteMin() {
-        if (root == null) {
-            throw new NoSuchElementException();
-        }
+        checkNotEmpty();
         this.root = deleteMin(root);
     }
 
     private Node<K, V> deleteMin(Node<K, V> node) {
         if (node.left != null) {
-            return new Node<>(node.key, node.value, deleteMin(node.left), node.right);
+            return new Node<>(node.key, node.value, deleteMin(node.left), node.right, node.size - 1);
         } else {
             return node.right;
         }
     }
 
     public void deleteMax() {
-        if (root == null) {
-            throw new NoSuchElementException();
-        }
+        checkNotEmpty();
         this.root = deleteMax(root);
     }
 
     private Node<K, V> deleteMax(Node<K, V> node) {
         if (node.right != null) {
-            return new Node<>(node.key, node.value, node.left, deleteMax(node.right));
+            return new Node<>(node.key, node.value, node.left, deleteMax(node.right), node.size - 1);
         } else {
             return node.left;
         }
     }
 
     public V min() {
+        return minNode(this.root).value;
+    }
+
+    private Node<K, V> minNode(Node<K, V> root) {
         Node<K, V> minNode = root;
         while (minNode.left != null) minNode = minNode.left;
-        return minNode.value;
+        return minNode;
     }
 
     public V max() {
+        return maxNode(root).value;
+    }
+
+    private Node<K, V> maxNode(Node<K, V> root) {
         Node<K, V> maxNode = root;
-        while (maxNode.left != null) maxNode = maxNode.right;
-        return maxNode.value;
+        while (maxNode.right != null) maxNode = maxNode.right;
+        return maxNode;
+    }
+
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+    public int size() {
+        return isEmpty() ? 0 : root.size;
+    }
+
+    
+    private void checkNotEmpty() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
     }
 }
