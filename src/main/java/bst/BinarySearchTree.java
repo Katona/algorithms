@@ -255,4 +255,22 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
             throw new NoSuchElementException();
         }
     }
+
+    // Key of rank k
+    public K select(int k) {
+        return selectInTree(k, root);
+    }
+
+    private K selectInTree(int k, Node<K,V> node) {
+        if (node == null) {
+            return null;
+        }
+        if (size(node.left) > k) {
+            return selectInTree(k, node.left);
+        } else if (size(node.left) == k) {
+            return node.key;
+        } else {
+            return selectInTree(k - size(node.left) - 1, node.right);
+        }
+    }
 }

@@ -107,4 +107,13 @@ public class BinarySearchTreeTest {
         assertEquals(99, tree.rank(99));
         assertEquals(100, tree.rank(100));
     }
+
+    @Test
+    public void testSelect() {
+        assertEquals(Integer.valueOf(1), tree.select(1));
+        assertEquals(Integer.valueOf(2), tree.select(2));
+        assertEquals(Integer.valueOf(99), tree.select(99));
+        assertEquals(null, tree.select(100));
+        assertEquals(null, tree.select(-1));
+    }
 }
