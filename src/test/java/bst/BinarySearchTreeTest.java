@@ -99,4 +99,12 @@ public class BinarySearchTreeTest {
         assertEquals(Integer.valueOf(1), tree.ceiling(0));
         assertNull(tree.ceiling(99));
     }
+
+    @Test
+    public void testRank() {
+        assertEquals(0, tree.rank(0));
+        assertEquals(1, tree.rank(1));
+        assertEquals(99, tree.rank(99));
+        assertEquals(100, tree.rank(100));
+    }
 }

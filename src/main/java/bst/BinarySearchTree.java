@@ -224,6 +224,28 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         }
     }
 
+    public int rank(K key) {
+        return rankInTree(key, root);
+    }
+
+    private int rankInTree(K key, Node<K, V> node) {
+        if (node == null) {
+            return 0;
+        }
+        int rank = 0;
+        if (greater(key, node)) {
+            rank = size(node.left) + 1;
+            rank = rank + rankInTree(key, node.right);
+        } else {
+            rank = rankInTree(key, node.left);
+        }
+        return rank;
+    }
+
+    private boolean greater(K key, Node<K, V> node) {
+        return comparator.compare(node.key, key) < 0;
+    }
+
     private void checkNotEmpty() {
         if (isEmpty()) {
             throw new NoSuchElementException();
