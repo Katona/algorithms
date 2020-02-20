@@ -41,7 +41,7 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         if (node == null) {
             result = new Node<>(key, value, null, null, 1);
         } else {
-            if (comparator.compare(key, node.key) < 0) {
+            if (smaller(key, node.key)) {
                 Node<K, V> newLeft = add(node.left, key, value);
                 result = new Node<>(node.key, node.value, newLeft, node.right, size(newLeft) + 1 + size(node.right));
             } else {
@@ -199,7 +199,7 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         if (node == null) {
             return null;
         }
-        if (comparator.compare(key, node.key) <= 0) {
+        if (!smaller(node.key, key)) {
             return floorNode(node.left, key);
         } else {
             Node<K, V> floorOfRight = floorNode(node.right, key);
@@ -216,7 +216,7 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         if (node == null) {
             return null;
         }
-        if (comparator.compare(key, node.key) >= 0) {
+        if (!greater(node.key, key)) {
             return ceilingNode(node.right, key);
         } else {
             Node<K, V> ceilingOfLeft = ceilingNode(node.left, key);
@@ -233,7 +233,7 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
             return 0;
         }
         int rank = 0;
-        if (greater(key, node)) {
+        if (greater(key, node.key)) {
             rank = size(node.left) + 1;
             rank = rank + rankInTree(key, node.right);
         } else {
@@ -242,8 +242,12 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         return rank;
     }
 
-    private boolean greater(K key, Node<K, V> node) {
-        return comparator.compare(node.key, key) < 0;
+    private boolean greater(K k1, K k2) {
+        return comparator.compare(k1, k2) > 0;
+    }
+
+    private boolean smaller(K k1, K k2) {
+        return comparator.compare(k1, k2) < 0;
     }
 
     private void checkNotEmpty() {
