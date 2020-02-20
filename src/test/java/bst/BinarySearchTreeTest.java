@@ -84,4 +84,12 @@ public class BinarySearchTreeTest {
         assertEquals(Integer.valueOf(79), tree.max());
     }
 
+    @Test
+    public void testFloor() {
+        assertEquals(Integer.valueOf(0), tree.floor(1));
+        assertEquals(Integer.valueOf(49), tree.floor(50));
+        assertEquals(Integer.valueOf(99), tree.floor(100));
+        assertNull(tree.floor(0));
+    }
+
 }

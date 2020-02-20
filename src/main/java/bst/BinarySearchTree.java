@@ -190,7 +190,23 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         return isEmpty() ? 0 : root.size;
     }
 
+    public K floor(K key) {
+        Node<K, V> floorNode = floorNode(root, key);
+        return floorNode != null ? floorNode.key : null;
+    }
     
+    private Node<K, V> floorNode(Node<K, V> node, K key) {
+        if (node == null) {
+            return null;
+        }
+        if (comparator.compare(key, node.key) <= 0) {
+            return floorNode(node.left, key);
+        } else {
+            Node<K, V> floorOfRight = floorNode(node.right, key);
+            return floorOfRight != null ? floorOfRight : node;
+        }
+    }
+
     private void checkNotEmpty() {
         if (isEmpty()) {
             throw new NoSuchElementException();
