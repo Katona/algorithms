@@ -207,6 +207,23 @@ public class BinarySearchTree<K, V> implements Iterable<V> {
         }
     }
 
+    public K ceiling(K key) {
+        Node<K, V> ceilingNode = ceilingNode(root, key);
+        return ceilingNode != null ? ceilingNode.key : null;
+    }
+
+    private Node<K, V> ceilingNode(Node<K, V> node, K key) {
+        if (node == null) {
+            return null;
+        }
+        if (comparator.compare(key, node.key) >= 0) {
+            return ceilingNode(node.right, key);
+        } else {
+            Node<K, V> ceilingOfLeft = ceilingNode(node.left, key);
+            return ceilingOfLeft != null ? ceilingOfLeft : node;
+        }
+    }
+
     private void checkNotEmpty() {
         if (isEmpty()) {
             throw new NoSuchElementException();

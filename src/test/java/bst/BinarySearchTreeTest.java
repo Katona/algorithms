@@ -91,5 +91,12 @@ public class BinarySearchTreeTest {
         assertEquals(Integer.valueOf(99), tree.floor(100));
         assertNull(tree.floor(0));
     }
-
+    
+    @Test
+    public void testCeiling() {
+        assertEquals(Integer.valueOf(99), tree.ceiling(98));
+        assertEquals(Integer.valueOf(51), tree.ceiling(50));
+        assertEquals(Integer.valueOf(1), tree.ceiling(0));
+        assertNull(tree.ceiling(99));
+    }
 }
